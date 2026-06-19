@@ -15,7 +15,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
   List<BottomNavigationBarItem> bottomItems = [
     const BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: "Home"),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.grid_goldenratio_rounded),
+      icon: Icon(Icons.border_all_rounded),
       label: "Matrix",
     ),
     const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
