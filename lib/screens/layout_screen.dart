@@ -12,13 +12,12 @@ class LayoutScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = LayoutCubit.get(context);
         return Scaffold(
-          body: cubit.screens[cubit.currentIndex],
-
+          body: cubit.screens[state.currentIndex],
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: cubit.currentIndex,
+            currentIndex: state.currentIndex,
             items: cubit.bottomItems,
             onTap: (value) {
-              cubit.changeBottomNav(value);
+              cubit.changeBottomNavIndex(value);
             },
             backgroundColor: const Color(0xff5b9ee1),
             showUnselectedLabels: false,
