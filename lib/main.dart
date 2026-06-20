@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/cubits/layout_cubit/layout_cubit.dart';
 import 'package:task_manager/cubits/task_cubit/task_cubit.dart';
 import 'package:task_manager/models/task_model.dart';
+import 'package:task_manager/models/user_profile.dart';
 import 'package:task_manager/repos/task_repo.dart';
 import 'package:task_manager/screens/layout_screen.dart';
 
@@ -15,6 +16,7 @@ void main() async {
   Hive.registerAdapter(TaskModelAdapter());
   Hive.registerAdapter(TaskStatusAdapter());
   Hive.registerAdapter(EisenhowerCategoryAdapter());
+  Hive.registerAdapter(UserProfileAdapter());
 
   await Hive.openBox<TaskModel>('tasks');
   final TaskRepository repository = TaskRepository();
