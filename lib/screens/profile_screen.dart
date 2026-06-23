@@ -5,11 +5,16 @@ import 'package:task_manager/cubits/task_cubit/task_cubit.dart';
 import 'package:task_manager/cubits/task_cubit/tast_states.dart';
 import 'package:task_manager/models/task_model.dart';
 
-// Theme Constants
-const Color _bgColor = Color(0xFFF6F4EE);
-const Color _cardColor = Color(0xFFFCFBF8);
-const Color _textColor = Color(0xFF3E2723);
-const Color _accentColor = Color(0xFF4E342E);
+// Theme Constants - Luminous Focus Design System
+const Color _bgColor = Color(0xFF131313);
+const Color _surfaceElevated = Color(0xFF363636);
+const Color _primaryColor = Color(0xFFC1C1FF);
+const Color _primaryContainer = Color(0xFF8687E7);
+const Color _textPrimary = Color(0xFFFFFFFF);
+const Color _textSecondary = Color(0xFFAFAFAF);
+const Color _taskLow = Color(0xFF80FFA3);
+const Color _taskMedium = Color(0xFFFFD070);
+const Color _taskHigh = Color(0xFFFF8080);
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -23,46 +28,68 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-            const Icon(Icons.menu_book, color: _textColor),
-            const SizedBox(width: 8),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _surfaceElevated,
+              ),
+              child: const Icon(
+                Icons.menu_book,
+                color: _primaryColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
             Text(
               'Master Ledger',
-              style: GoogleFonts.playfairDisplay(
-                color: _textColor,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
+              style: GoogleFonts.inter(
+                color: _primaryColor,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(Icons.settings, color: _textSecondary),
+              onPressed: () {},
+            ),
+          ),
+        ],
       ),
       // Automatically rebuilds whenever TaskCubit updates Hive data
       body: BlocBuilder<TaskCubit, TaskStates>(
         builder: (context, taskState) {
-          // -------------------------------------------------------------
-          // 1. DATA EXTRACTION
-          // -------------------------------------------------------------
+          // --- DATA EXTRACTION ---
           final allTasks = taskState.allTasks;
-
-          // Note: Adjust 'TaskStatus.done' if your enum uses a different name
           final completedTasks = allTasks
               .where((t) => t.status == TaskStatus.done)
               .toList();
+          final todoTasks = allTasks
+              .where((t) => t.status == TaskStatus.todo)
+              .toList();
+          final doingTasks = allTasks
+              .where((t) => t.status == TaskStatus.doing)
+              .toList();
+          final overdueTasks = allTasks
+              .where((t) => t.status == TaskStatus.overdue)
+              .toList();
           final conqueredCount = completedTasks.length;
 
-          // -------------------------------------------------------------
-          // 2. RANK & LEVEL CALCULATIONS
-          // -------------------------------------------------------------
-          const int tasksPerLevel = 10;
+          // --- RANK & LEVEL CALCULATIONS ---
+          const int tasksPerLevel = 12;
           final int currentLevel = (conqueredCount ~/ tasksPerLevel) + 1;
           final int tasksIntoCurrentLevel = conqueredCount % tasksPerLevel;
-          final int tasksUntilNext = tasksPerLevel - tasksIntoCurrentLevel;
+          final int totalXP = conqueredCount * 100;
+          final int xpForNextLevel = tasksPerLevel * 100;
           final double progressFraction = tasksIntoCurrentLevel / tasksPerLevel;
 
-          // -------------------------------------------------------------
-          // 3. 7-DAY FOCUS CALCULATIONS
-          // -------------------------------------------------------------
+          // --- 7-DAY FOCUS CALCULATIONS ---
           final now = DateTime.now();
           final List<int> tasksPerDay = [];
           final List<String> dayLabels = [];
@@ -71,8 +98,6 @@ class ProfileScreen extends StatelessWidget {
             final targetDate = now.subtract(Duration(days: i));
             dayLabels.add(_getWeekdayLabel(targetDate.weekday));
 
-            // Count completed tasks for this specific day
-            // Note: Adjust 'task.date' to match your TaskModel's DateTime property
             final countForDay = completedTasks.where((task) {
               return task.date.year == targetDate.year &&
                   task.date.month == targetDate.month &&
@@ -85,51 +110,312 @@ class ProfileScreen extends StatelessWidget {
           final int peak = tasksPerDay.isEmpty
               ? 0
               : tasksPerDay.reduce((a, b) => a > b ? a : b);
-          final int lowest = tasksPerDay.isEmpty
-              ? 0
-              : tasksPerDay.reduce((a, b) => a < b ? a : b);
 
-          // -------------------------------------------------------------
-          // 4. RECENT ARCHIVES
-          // -------------------------------------------------------------
+          // --- RECENT ARCHIVES ---
           final recentArchives = completedTasks.reversed.take(3).toList();
 
-          // -------------------------------------------------------------
-          // 5. UI RENDERING
-          // -------------------------------------------------------------
+          // --- UI RENDERING ---
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 16.0,
+              horizontal: 16.0,
+              vertical: 24.0,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildProfileHeader(),
-                const SizedBox(height: 32),
+                _buildProfileHeader(conqueredCount),
+                const SizedBox(height: 24),
 
                 _buildCurrentRankCard(
                   level: currentLevel,
-                  conquered: conqueredCount,
-                  untilNext: tasksUntilNext,
+                  currentXP: totalXP,
+                  xpForNextLevel: xpForNextLevel,
                   progress: progressFraction,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 _buildFocusChartCard(
                   dailyData: tasksPerDay,
                   labels: dayLabels,
                   peak: peak,
-                  lowest: lowest,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 _buildRecentArchivesSection(recentArchives),
-                const SizedBox(height: 40), // Bottom padding
+                const SizedBox(height: 24),
+
+                // Stats Section
+                _buildStatsSection(
+                  allTasks,
+                  completedTasks,
+                  todoTasks,
+                  doingTasks,
+                  overdueTasks,
+                ),
+                const SizedBox(height: 80), // Bottom padding for nav bar
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildStatsSection(
+    List<TaskModel> allTasks,
+    List<TaskModel> completedTasks,
+    List<TaskModel> todoTasks,
+    List<TaskModel> doingTasks,
+    List<TaskModel> overdueTasks,
+  ) {
+    final totalTasks = allTasks.length;
+    final completionRate = totalTasks > 0
+        ? (completedTasks.length / totalTasks * 100).toStringAsFixed(1)
+        : '0';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Stats Header
+        Text(
+          'QUICK STATS',
+          style: GoogleFonts.inter(
+            color: _textSecondary,
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.05,
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Summary Stats Row 1
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.check_circle,
+                title: 'Completed',
+                value: completedTasks.length.toString(),
+                color: _taskLow,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.pending_actions,
+                title: 'Todo',
+                value: todoTasks.length.toString(),
+                color: _taskMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        // Summary Stats Row 2
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.schedule,
+                title: 'In Progress',
+                value: doingTasks.length.toString(),
+                color: _primaryColor,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.error,
+                title: 'Overdue',
+                value: overdueTasks.length.toString(),
+                color: _taskHigh,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Completion Rate Card
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: _surfaceElevated,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFF444444), width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'COMPLETION RATE',
+                style: GoogleFonts.inter(
+                  color: _textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.05,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  '$completionRate%',
+                  style: GoogleFonts.inter(
+                    color: _primaryColor,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: (double.parse(completionRate) / 100).clamp(0.0, 1.0),
+                  minHeight: 8,
+                  backgroundColor: const Color(0xFF2A2A2A),
+                  valueColor: AlwaysStoppedAnimation<Color>(_primaryContainer),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Tasks by Category
+        Text(
+          'Tasks by Priority',
+          style: GoogleFonts.inter(
+            color: _textPrimary,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ..._buildCategoryStats(allTasks),
+      ],
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _surfaceElevated,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF444444), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              color: color,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              color: _textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildCategoryStats(List<TaskModel> tasks) {
+    final urgentImportant = tasks
+        .where((t) => t.category.toString().contains('urgentImportant'))
+        .length;
+    final notUrgentImportant = tasks
+        .where((t) => t.category.toString().contains('notUrgentImportant'))
+        .length;
+    final urgentNotImportant = tasks
+        .where((t) => t.category.toString().contains('urgentNotImportant'))
+        .length;
+    final notUrgentNotImportant = tasks
+        .where((t) => t.category.toString().contains('notUrgentNotImportant'))
+        .length;
+
+    return [
+      _buildCategoryTile(
+        label: 'Urgent & Important',
+        count: urgentImportant,
+        color: _taskHigh,
+      ),
+      _buildCategoryTile(
+        label: 'Important',
+        count: notUrgentImportant,
+        color: _taskMedium,
+      ),
+      _buildCategoryTile(
+        label: 'Urgent',
+        count: urgentNotImportant,
+        color: _primaryColor,
+      ),
+      _buildCategoryTile(
+        label: 'Other',
+        count: notUrgentNotImportant,
+        color: _taskLow,
+      ),
+    ];
+  }
+
+  Widget _buildCategoryTile({
+    required String label,
+    required int count,
+    required Color color,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _surfaceElevated,
+        borderRadius: BorderRadius.circular(8),
+        border: Border(left: BorderSide(color: color, width: 4)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              color: _textPrimary,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              count.toString(),
+              style: GoogleFonts.inter(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -159,52 +445,70 @@ class ProfileScreen extends StatelessWidget {
 
   // --- UI WIDGET COMPONENTS ---
 
-  Widget _buildProfileHeader() {
+  Widget _buildProfileHeader(int completedCount) {
     return Column(
       children: [
-        Container(
-          width: 110,
-          height: 110,
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Container(
+              width: 128,
+              height: 128,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: _primaryContainer,
+                  width: 4,
+                ),
               ),
-            ],
-            border: Border.all(color: Colors.black.withOpacity(0.05), width: 1),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(19),
-            child: Image.asset(
-              'assets/scholar_avatar.png', // Replace with your actual asset path
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.grey,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/scholar_avatar.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: _surfaceElevated,
+                    child: const Icon(
+                      Icons.person,
+                      size: 60,
+                      color: _textSecondary,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _primaryContainer,
+                border: Border.all(color: _bgColor, width: 3),
+              ),
+              child: const Icon(
+                Icons.verified,
+                color: Color(0xFF23217F),
+                size: 20,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         Text(
           'Ziad Alaa',
-          style: GoogleFonts.playfairDisplay(
-            color: _textColor,
+          style: GoogleFonts.inter(
+            color: _textPrimary,
             fontSize: 28,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
-          'Master Scholar',
-          style: GoogleFonts.lato(
-            color: _textColor.withOpacity(0.7),
-            fontSize: 16,
-            fontStyle: FontStyle.italic,
+          'MASTER SCHOLAR',
+          style: GoogleFonts.inter(
+            color: _primaryColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.05,
           ),
         ),
       ],
@@ -213,67 +517,79 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildCurrentRankCard({
     required int level,
-    required int conquered,
-    required int untilNext,
+    required int currentXP,
+    required int xpForNextLevel,
     required double progress,
   }) {
-    return _BaseCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: _surfaceElevated,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFF444444), width: 1),
+      ),
+      child: Row(
         children: [
-          Text(
-            'Current Rank',
-            style: GoogleFonts.playfairDisplay(
-              color: _textColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _primaryContainer,
+            ),
+            child: const Icon(
+              Icons.military_tech,
+              color: Color(0xFF23217F),
+              size: 28,
             ),
           ),
-          const Divider(color: Colors.black12, height: 24),
-          Center(
+          const SizedBox(width: 16),
+          Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.military_tech, size: 64, color: _accentColor),
-                const SizedBox(height: 8),
-                Text(
-                  'Level $level Scholar',
-                  style: GoogleFonts.lato(
-                    color: _accentColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '$conquered Tasks Conquered. $untilNext until next rank.',
-                  style: GoogleFonts.lato(
-                    color: _textColor.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Stack(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 4,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(2),
+                    Text(
+                      'Current Rank',
+                      style: GoogleFonts.inter(
+                        color: _textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    FractionallySizedBox(
-                      widthFactor: progress.clamp(0.0, 1.0),
-                      child: Container(
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: _accentColor,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                    Text(
+                      '$currentXP / $xpForNextLevel XP',
+                      style: GoogleFonts.inter(
+                        color: _primaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress.clamp(0.0, 1.0),
+                    minHeight: 6,
+                    backgroundColor: Color(0xFF2A2A2A),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      _primaryContainer,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Level $level Scholar',
+                  style: GoogleFonts.inter(
+                    color: _textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -287,24 +603,46 @@ class ProfileScreen extends StatelessWidget {
     required List<int> dailyData,
     required List<String> labels,
     required int peak,
-    required int lowest,
   }) {
-    return _BaseCard(
+    final upwardTrend =
+        dailyData.isNotEmpty && dailyData.last > (dailyData.first) ? '↑' : '↓';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: _surfaceElevated,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFF444444), width: 1),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '7-Day Focus',
-            style: GoogleFonts.playfairDisplay(
-              color: _textColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '7-DAY FOCUS',
+                style: GoogleFonts.inter(
+                  color: _textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.05,
+                ),
+              ),
+              Text(
+                '$upwardTrend 12% vs last week',
+                style: GoogleFonts.inter(
+                  color: _taskLow,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          const Divider(color: Colors.black12, height: 24),
-
+          const SizedBox(height: 16),
           SizedBox(
-            height: 100,
+            height: 120,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -312,56 +650,33 @@ class ProfileScreen extends StatelessWidget {
                 final double heightFactor = peak == 0
                     ? 0
                     : dailyData[index] / peak;
+                final bool isPeak = dailyData[index] == peak && peak > 0;
 
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
-                      width: 12,
-                      height: 60 * heightFactor + 4,
+                      width: 20,
+                      height: 80 * heightFactor + 4,
                       decoration: BoxDecoration(
-                        color: dailyData[index] == peak && peak > 0
-                            ? _accentColor
-                            : Colors.grey.shade300,
+                        color: isPeak ? _primaryContainer : Color(0xFF2A2A2A),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       labels[index],
-                      style: GoogleFonts.lato(
-                        color: _textColor.withOpacity(0.5),
+                      style: GoogleFonts.inter(
+                        color: _textSecondary,
                         fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 );
               }),
             ),
-          ),
-
-          const Divider(color: Colors.black12, height: 24),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Lowest: $lowest',
-                style: GoogleFonts.lato(
-                  fontSize: 12,
-                  color: _textColor.withOpacity(0.7),
-                ),
-              ),
-              Text(
-                'Peak: $peak',
-                style: GoogleFonts.lato(
-                  fontSize: 12,
-                  color: _textColor.withOpacity(0.7),
-                ),
-              ),
-            ],
           ),
         ],
       ),
@@ -372,98 +687,172 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Recent Archives',
-          style: GoogleFonts.playfairDisplay(
-            color: _textColor,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Recent Archives',
+              style: GoogleFonts.inter(
+                color: _textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                'View All',
+                style: GoogleFonts.inter(
+                  color: _primaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
-
+        const SizedBox(height: 12),
         if (recentTasks.isEmpty)
-          Text("No archives yet.", style: GoogleFonts.lato(color: Colors.grey)),
-
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Text(
+              "No archives yet.",
+              style: GoogleFonts.inter(
+                color: _textSecondary,
+                fontSize: 14,
+              ),
+            ),
+          ),
         ...recentTasks.map(
           (task) => Padding(
             padding: const EdgeInsets.only(bottom: 12.0),
-            // Note: Adjust 'task.title' to match your TaskModel's title property
-            child: _ArchiveTile(taskName: task.title),
+            child: _ArchiveTile(
+              taskName: task.title,
+              completedTime: 'Completed ${_getTimeAgo(task.date)}',
+              category: _getCategoryDisplayName(task.category),
+            ),
           ),
         ),
       ],
     );
   }
+
+  String _getTimeAgo(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inHours < 1) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else {
+      return 'Oct ${date.day}';
+    }
+  }
+
+  String _getCategoryDisplayName(dynamic category) {
+    final categoryStr = category.toString().split('.').last;
+    switch (categoryStr) {
+      case 'urgentImportant':
+        return 'Work';
+      case 'notUrgentImportant':
+        return 'Personal';
+      case 'urgentNotImportant':
+        return 'Admin';
+      case 'notUrgentNotImportant':
+        return 'Research';
+      default:
+        return 'Other';
+    }
+  }
 }
 
 // --- REUSABLE WIDGETS ---
 
-class _BaseCard extends StatelessWidget {
-  final Widget child;
-
-  const _BaseCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: _cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
-
 class _ArchiveTile extends StatelessWidget {
   final String taskName;
+  final String completedTime;
+  final String category;
 
-  const _ArchiveTile({required this.taskName});
+  const _ArchiveTile({
+    required this.taskName,
+    required this.completedTime,
+    required this.category,
+  });
+
+  Color _getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'work':
+        return _taskHigh;
+      case 'personal':
+        return _taskLow;
+      case 'admin':
+        return _taskMedium;
+      case 'research':
+        return _taskLow;
+      default:
+        return _primaryColor;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final categoryColor = _getCategoryColor(category);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: _cardColor,
+        color: _surfaceElevated,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border(
+          left: BorderSide(color: categoryColor, width: 4),
+        ),
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: const Icon(Icons.check, size: 12, color: Colors.grey),
-          ),
-          const SizedBox(width: 16),
+          Icon(Icons.check_circle, color: _taskLow, size: 20),
+          const SizedBox(width: 12),
           Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  taskName,
+                  style: GoogleFonts.inter(
+                    color: _textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  completedTime,
+                  style: GoogleFonts.inter(
+                    color: _textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: categoryColor.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: Text(
-              taskName,
-              style: GoogleFonts.lato(
-                color: _textColor.withOpacity(0.6),
-                fontSize: 15,
-                decoration: TextDecoration.lineThrough,
-                fontStyle: FontStyle.italic,
+              category,
+              style: GoogleFonts.inter(
+                color: categoryColor,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

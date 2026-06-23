@@ -14,15 +14,15 @@ class LayoutCubit extends Cubit<LayoutStates> {
   int get currentIndex => state.currentIndex;
   List<BottomNavigationBarItem> bottomItems = [
     const BottomNavigationBarItem(
-      icon: Icon(Icons.home_rounded),
-      label: "Home",
+      icon: Icon(Icons.format_list_bulleted),
+      label: "Ledger",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.border_all_rounded),
+      icon: Icon(Icons.grid_view),
       label: "Matrix",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.person),
+      icon: Icon(Icons.person_rounded),
       label: "Profile",
     ),
   ];
