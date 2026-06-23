@@ -8,10 +8,12 @@ ThemeData appTheme = ThemeData(
 
   colorScheme: const ColorScheme.dark(
     primary: Color(0xff8687E7),
+    primaryContainer: Color(0xFFC1C1FF),
     secondary: Color(0xff272727),
     tertiary: Color(0xff4C4E72),
     surface: Color(0xff1E1E1E),
     onPrimary: Colors.white,
+    inversePrimary: Color(0xFF1C1879),
     onSurface: Colors.white,
   ),
 
@@ -89,7 +91,7 @@ ThemeData appTheme = ThemeData(
 
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: const Color(0xff1E1E1E),
+    fillColor: const Color(0xff1D1D1D),
 
     hintStyle: GoogleFonts.inter(
       color: const Color(0xff8D8D8D),
@@ -97,21 +99,21 @@ ThemeData appTheme = ThemeData(
     ),
 
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(
         color: Color(0xff3A3A3A),
       ),
     ),
 
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(
         color: Color(0xff3A3A3A),
       ),
     ),
 
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(
         color: Color(0xff8687E7),
         width: 2,
@@ -131,6 +133,10 @@ ThemeData appTheme = ThemeData(
 
   iconTheme: const IconThemeData(
     color: Colors.white,
+  ),
+
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Color(0xFF2A2A2A),
   ),
 
   dividerColor: const Color(0xff3A3A3A),
