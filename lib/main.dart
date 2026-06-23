@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/cubits/layout_cubit/layout_cubit.dart';
@@ -7,12 +8,13 @@ import 'package:task_manager/models/task_model.dart';
 import 'package:task_manager/models/user_profile.dart';
 import 'package:task_manager/repos/task_repo.dart';
 import 'package:task_manager/screens/layout_screen.dart';
+import 'package:task_manager/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemUiOverlayStyle.light;
 
   await Hive.initFlutter();
-
   Hive.registerAdapter(TaskModelAdapter());
   Hive.registerAdapter(TaskStatusAdapter());
   Hive.registerAdapter(EisenhowerCategoryAdapter());
@@ -42,9 +44,10 @@ class TaskManagerApp extends StatelessWidget {
           create: (context) => TaskCubit(repository),
         ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LayoutScreen(),
+        home: const LayoutScreen(),
+        theme: appTheme,
       ),
     );
   }

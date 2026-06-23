@@ -19,19 +19,13 @@ class LayoutScreen extends StatelessWidget {
             onTap: (value) {
               cubit.changeBottomNavIndex(value);
             },
-            backgroundColor: const Color(0xff5b9ee1),
             showUnselectedLabels: false,
             showSelectedLabels: false,
             enableFeedback: false,
-            selectedItemColor: Colors.white,
-            selectedIconTheme: const IconThemeData(
-              color: Colors.white,
-              size: 32,
-            ),
             elevation: 0,
-            unselectedItemColor: Colors.white54,
             type: BottomNavigationBarType.fixed,
           ),
+          backgroundColor: const Color(0xff121212),
         );
       },
     );
