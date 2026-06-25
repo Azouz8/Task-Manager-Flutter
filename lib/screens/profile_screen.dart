@@ -28,19 +28,19 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _surfaceElevated,
-              ),
-              child: const Icon(
-                Icons.menu_book,
-                color: _primaryColor,
-                size: 20,
-              ),
-            ),
+            // Container(
+            //   width: 40,
+            //   height: 40,
+            //   decoration: BoxDecoration(
+            //     shape: BoxShape.circle,
+            //     color: _surfaceElevated,
+            //   ),
+            // child: const Icon(
+            //   Icons.menu_book,
+            //   color: _primaryColor,
+            //   size: 20,
+            // ),
+            // ),
             const SizedBox(width: 12),
             Text(
               'Master Ledger',
@@ -52,15 +52,15 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: IconButton(
-              icon: const Icon(Icons.settings, color: _textSecondary),
-              onPressed: () {},
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: IconButton(
+        //       icon: const Icon(Icons.settings, color: _textSecondary),
+        //       onPressed: () {},
+        //     ),
+        //   ),
+        // ],
       ),
       // Automatically rebuilds whenever TaskCubit updates Hive data
       body: BlocBuilder<TaskCubit, TaskStates>(
