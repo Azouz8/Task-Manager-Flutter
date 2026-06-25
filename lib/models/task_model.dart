@@ -1,5 +1,8 @@
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 part 'task_model.g.dart';
+
+const uuid = Uuid();
 
 @HiveType(typeId: 0)
 class TaskModel extends HiveObject {
@@ -22,13 +25,12 @@ class TaskModel extends HiveObject {
   final EisenhowerCategory category;
 
   TaskModel({
-    required this.id,
     required this.title,
     required this.description,
     required this.date,
     required this.status,
     required this.category,
-  });
+  }) : id = uuid.v4();
 
   @override
   String toString() {

@@ -11,9 +11,9 @@ class HomeAppbar extends StatelessWidget {
       elevation: 0,
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color(0xFF363636),
+          color: Color(0xFF363636),
         ),
         child: const Icon(
           Icons.format_list_bulleted,

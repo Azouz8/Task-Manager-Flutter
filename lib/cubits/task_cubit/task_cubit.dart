@@ -7,7 +7,13 @@ class TaskCubit extends Cubit<TaskStates> {
   final TaskRepository repository;
 
   TaskCubit(this.repository) : super(TaskStates([])) {
+    _loadInitialTasks();
     _startListening();
+  }
+
+  void _loadInitialTasks() {
+    final tasks = repository.getTasks();
+    emit(TaskStates(tasks));
   }
 
   void _startListening() {
