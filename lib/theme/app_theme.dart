@@ -17,7 +17,7 @@ ThemeData appTheme = ThemeData(
     onSurface: Colors.white,
   ),
 
-  cardColor: const Color(0xff1E1E1E),
+  cardColor: const Color(0xFF363636),
 
   appBarTheme: AppBarTheme(
     elevation: 0,
@@ -75,6 +75,16 @@ ThemeData appTheme = ThemeData(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: Colors.white,
+    ),
+    displayMedium: GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: const Color(0xFFAFAFAF),
+    ),
+    displaySmall: GoogleFonts.inter(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: const Color(0xFFC7C5D4),
     ),
   ),
 

@@ -33,22 +33,22 @@ class _HomeCategorySelectionState extends State<HomeCategorySelection> {
           inputDecorationTheme: Theme.of(
             context,
           ).inputDecorationTheme,
-          dropdownMenuEntries: const [
+          dropdownMenuEntries: [
             DropdownMenuEntry(
               value: EisenhowerCategory.notUrgentImportant,
-              label: "NOT urget important",
+              label: categoryMap[EisenhowerCategory.notUrgentImportant]!,
             ),
             DropdownMenuEntry(
               value: EisenhowerCategory.notUrgentNotImportant,
-              label: "NOT urget NOT important",
+              label: categoryMap[EisenhowerCategory.notUrgentNotImportant]!,
             ),
             DropdownMenuEntry(
               value: EisenhowerCategory.urgentImportant,
-              label: "Urget important",
+              label: categoryMap[EisenhowerCategory.urgentImportant]!,
             ),
             DropdownMenuEntry(
               value: EisenhowerCategory.urgentNotImportant,
-              label: "Urget NOT important",
+              label: categoryMap[EisenhowerCategory.urgentNotImportant]!,
             ),
           ],
         ),
