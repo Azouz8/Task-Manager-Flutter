@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager/cubits/home_cubit/home_cubit.dart';
+import 'package:task_manager/models/task_model.dart';
 
 class HomeSlidingbar extends StatelessWidget {
   const HomeSlidingbar({super.key});
@@ -11,11 +12,11 @@ class HomeSlidingbar extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         return Container(
-          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
           child: CupertinoSlidingSegmentedControl(
             children: state.slidingBarControlsMap,
             groupValue: state.selectedControl,
-            onValueChanged: (SlidingBarControl? control) {
+            onValueChanged: (TaskStatus? control) {
               context.read<HomeCubit>().changeControl(control!);
             },
 

@@ -3,29 +3,29 @@ part of 'home_cubit.dart';
 @immutable
 sealed class HomeState {
   HomeState({required this.selectedControl});
-  final Map<SlidingBarControl, Container> slidingBarControlsMap = {
-    SlidingBarControl.overDue: Container(
+  final Map<TaskStatus, Container> slidingBarControlsMap = {
+    TaskStatus.overdue: Container(
       padding: const EdgeInsets.all(10),
       child: const Text(
         "Overdue",
         style: TextStyle(color: Colors.white),
       ),
     ),
-    SlidingBarControl.toDo: Container(
+    TaskStatus.todo: Container(
       padding: const EdgeInsets.all(10),
       child: const Text(
         "To Do",
         style: TextStyle(color: Colors.white),
       ),
     ),
-    SlidingBarControl.doing: Container(
+    TaskStatus.doing: Container(
       padding: const EdgeInsets.all(10),
       child: const Text(
         "Doing",
         style: TextStyle(color: Colors.white),
       ),
     ),
-    SlidingBarControl.done: Container(
+    TaskStatus.done: Container(
       padding: const EdgeInsets.all(10),
       child: const Text(
         "Done",
@@ -34,15 +34,13 @@ sealed class HomeState {
     ),
   };
 
-  final SlidingBarControl selectedControl;
+  final TaskStatus selectedControl;
 }
 
 final class HomeInitial extends HomeState {
-  HomeInitial({super.selectedControl = SlidingBarControl.toDo});
+  HomeInitial({super.selectedControl = TaskStatus.todo});
 }
 
 final class HomeUpdate extends HomeState {
-  HomeUpdate(SlidingBarControl control) : super(selectedControl: control);
+  HomeUpdate(TaskStatus control) : super(selectedControl: control);
 }
-
-enum SlidingBarControl { overDue, toDo, doing, done }

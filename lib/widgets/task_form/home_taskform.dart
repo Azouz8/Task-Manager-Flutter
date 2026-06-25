@@ -124,6 +124,7 @@ class HomeTaskform extends StatelessWidget {
                               ),
                             );
                             _formKey.currentState!.reset();
+                            Navigator.pop(context);
                           }
                         },
                         label: const Text(
