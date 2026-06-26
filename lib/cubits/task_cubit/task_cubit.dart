@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager/cubits/task_cubit/tast_states.dart';
 import 'package:task_manager/models/task_model.dart';
@@ -5,22 +6,17 @@ import 'package:task_manager/repos/task_repo.dart';
 
 class TaskCubit extends Cubit<TaskStates> {
   final TaskRepository repository;
+  late final VoidCallback _listener;
 
-  TaskCubit(this.repository) : super(TaskStates([])) {
-    _loadInitialTasks();
-    _startListening();
+  TaskCubit(this.repository) : super(TaskStates(repository.getTasks())) {
+    _listener = () => emit(TaskStates(repository.getTasks()));
+    repository.listenable().addListener(_listener);
   }
 
-  void _loadInitialTasks() {
-    final tasks = repository.getTasks();
-    emit(TaskStates(tasks));
-  }
-
-  void _startListening() {
-    repository.listenable().addListener(() {
-      final tasks = repository.getTasks();
-      emit(TaskStates(tasks));
-    });
+  @override
+  Future<void> close() {
+    repository.listenable().removeListener(_listener);
+    return super.close();
   }
 
   List<TaskModel> getTasksByStatus(TaskStatus status) {
