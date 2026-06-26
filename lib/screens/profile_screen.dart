@@ -5,11 +5,7 @@ import 'package:task_manager/cubits/task_cubit/tast_states.dart';
 import 'package:task_manager/models/task_model.dart';
 
 import '../utils/profile_helpers.dart';
-import '../widgets/Profile/profile_header.dart';
-import '../widgets/Profile/current_rank_card.dart';
-import '../widgets/Profile/focus_chart_card.dart';
-import '../widgets/Profile/recent_archives_section.dart';
-import '../widgets/Profile/stats_section.dart';
+import '../widgets/Profile/index.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
