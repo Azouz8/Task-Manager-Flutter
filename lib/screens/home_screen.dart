@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:task_manager/cubits/home_cubit/home_cubit.dart';
 import 'package:task_manager/widgets/home_appbar.dart';
 import 'package:task_manager/widgets/home_slidingbar.dart';

@@ -112,9 +112,9 @@ class HomeTaskform extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () async {
+                        onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            await context.read<TaskCubit>().addTask(
+                            context.read<TaskCubit>().addTask(
                               TaskModel(
                                 title: _titleController.text,
                                 description: _detailsController.text,

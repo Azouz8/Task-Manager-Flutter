@@ -20,6 +20,7 @@ class HomeTaskList extends StatelessWidget {
             );
             return Expanded(
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: allTasks.length,
                 itemBuilder: (context, index) {
                   return TaskCard(
