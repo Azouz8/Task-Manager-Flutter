@@ -4,13 +4,11 @@ import '../../models/user_profile.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  // Define the constant box name for consistency
   static const String _boxName = 'userProfileBox';
   static const String _profileKey = 'current_user';
 
   ProfileCubit() : super(ProfileInitial());
 
-  /// Fetches user profile from Hive local box storage
   Future<void> loadProfile() async {
     emit(ProfileLoading());
     try {
@@ -20,7 +18,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       if (profile != null) {
         emit(ProfileLoaded(profile));
       } else {
-        // Fallback or default structure if no local profile exists yet
         final defaultProfile = UserProfile(
           name: "John Doe",
           email: "example@domain.com",
@@ -34,13 +31,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  /// Saves or updates the user profile details locally
   Future<void> updateProfile(UserProfile updatedProfile) async {
     try {
       final box = await Hive.openBox<UserProfile>(_boxName);
       await box.put(_profileKey, updatedProfile);
 
-      // Update the state immediately so UI renders new changes
       emit(ProfileLoaded(updatedProfile));
     } catch (e) {
       emit(ProfileError("Failed to save changes. Please try again."));
