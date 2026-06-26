@@ -18,14 +18,15 @@ class TaskCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: () async {
-                final messenger = ScaffoldMessenger.of(
-                  context,
-                );
+            Checkbox(
+              value: task.status == TaskStatus.done,
+              onChanged: (_) async {
+                final messenger = ScaffoldMessenger.of(context);
                 final snackBarColor = Theme.of(context).cardColor;
                 final undoColor = Theme.of(context).colorScheme.primary;
+
                 final originalStatus = task.status;
+
                 await updateTask(
                   task.copyWith(
                     id: task.id,
@@ -34,12 +35,14 @@ class TaskCard extends StatelessWidget {
                         : TaskStatus.done,
                   ),
                 );
+
                 messenger.clearSnackBars();
+
                 messenger.showSnackBar(
                   SnackBar(
-                    backgroundColor: snackBarColor,
                     persist: false,
-                    duration: const Duration(seconds: 4),
+                    backgroundColor: snackBarColor,
+                    duration: const Duration(seconds: 2),
                     content: const Text(
                       "Task status updated.",
                       style: TextStyle(color: Colors.white),
@@ -49,28 +52,16 @@ class TaskCard extends StatelessWidget {
                       textColor: undoColor,
                       onPressed: () async {
                         await updateTask(
-                          task.copyWith(id: task.id, status: originalStatus),
+                          task.copyWith(
+                            id: task.id,
+                            status: originalStatus,
+                          ),
                         );
                       },
                     ),
                   ),
                 );
               },
-              child: Container(
-                width: 25,
-                height: 25,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  // Fills the background with your primary color when checked
-                  color: task.status == TaskStatus.done
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.transparent,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 1.5,
-                  ),
-                ),
-              ),
             ),
             const SizedBox(
               width: 16,

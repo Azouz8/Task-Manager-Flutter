@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 ThemeData appTheme = ThemeData(
   brightness: Brightness.dark,
-
+  splashFactory: NoSplash.splashFactory,
+  splashColor: Colors.transparent,
+  highlightColor: Colors.transparent,
   scaffoldBackgroundColor: const Color(0xff121212),
 
   colorScheme: const ColorScheme.dark(
@@ -18,9 +20,29 @@ ThemeData appTheme = ThemeData(
   ),
 
   cardColor: const Color(0xFF363636),
-
+  checkboxTheme: CheckboxThemeData(
+    shape: const CircleBorder(),
+    side: WidgetStateBorderSide.resolveWith(
+      (states) => const BorderSide(
+        color: Color(0xff8687E7),
+        width: 1.5,
+      ),
+    ),
+    fillColor: WidgetStateProperty.resolveWith(
+      (states) {
+        if (states.contains(WidgetState.selected)) {
+          return const Color(0xff8687E7);
+        }
+        return Colors.transparent;
+      },
+    ),
+    checkColor: const WidgetStatePropertyAll(Colors.white),
+    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    visualDensity: VisualDensity.compact,
+  ),
   appBarTheme: AppBarTheme(
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: false,
     backgroundColor: const Color(0xff121212),
     foregroundColor: Colors.white,
@@ -136,9 +158,20 @@ ThemeData appTheme = ThemeData(
     selectedItemColor: Color(0xff8687E7),
     unselectedItemColor: Color(0xffB3B3B3),
     elevation: 0,
+    enableFeedback: false,
     type: BottomNavigationBarType.fixed,
-    showUnselectedLabels: false,
-    showSelectedLabels: false,
+    showUnselectedLabels: true,
+    showSelectedLabels: true,
+    selectedIconTheme: IconThemeData(size: 24),
+    unselectedIconTheme: IconThemeData(size: 20),
+    selectedLabelStyle: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+    ),
+    unselectedLabelStyle: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w400,
+    ),
   ),
 
   iconTheme: const IconThemeData(
