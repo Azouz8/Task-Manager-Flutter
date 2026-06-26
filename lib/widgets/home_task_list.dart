@@ -23,8 +23,10 @@ class HomeTaskList extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: allTasks.length,
                 itemBuilder: (context, index) {
+                  final task = allTasks[index];
                   return TaskCard(
                     allTasks[index],
+                    key: ValueKey(task.id),
                     updateTask: updateTask,
                   );
                 },
