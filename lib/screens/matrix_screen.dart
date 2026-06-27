@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_manager/models/task_model.dart';
 import 'package:task_manager/widgets/matrix/matrix_quadrant.dart';
 import 'package:task_manager/widgets/task_form/home_taskform.dart';
 
@@ -60,22 +61,23 @@ class MatrixScreen extends StatelessWidget {
         mainAxisSpacing: 12,
         childAspectRatio: exactAspectRatio,
         physics: const BouncingScrollPhysics(),
-        children: const [
+        children: [
           MatrixQuadrant(
-            quadrantTitle: 'URGENT & IMPORTANT',
-            color: Color(0xffF17559),
+            quadrantTitle: categoryMap[EisenhowerCategory.urgentImportant]!,
+            color: categoryColors[EisenhowerCategory.urgentImportant]!,
           ),
           MatrixQuadrant(
-            quadrantTitle: 'NOT URGENT & IMPORTANT',
-            color: Color(0xffFFB03F),
+            quadrantTitle: categoryMap[EisenhowerCategory.notUrgentImportant]!,
+            color: categoryColors[EisenhowerCategory.notUrgentImportant]!,
           ),
           MatrixQuadrant(
-            quadrantTitle: 'URGENT & NOT IMPORTANT',
-            color: Color(0xff74C748),
+            quadrantTitle: categoryMap[EisenhowerCategory.urgentNotImportant]!,
+            color: categoryColors[EisenhowerCategory.urgentNotImportant]!,
           ),
           MatrixQuadrant(
-            quadrantTitle: 'NOT URGENT & NOT IMPORTANT',
-            color: Color(0xffA8C5C9),
+            quadrantTitle:
+                categoryMap[EisenhowerCategory.notUrgentNotImportant]!,
+            color: categoryColors[EisenhowerCategory.notUrgentNotImportant]!,
           ),
         ],
       ),
