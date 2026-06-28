@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+
+import '../theme/app_colors.dart';
 part 'task_model.g.dart';
 
 final formatter = DateFormat.yMd();
 final Map<EisenhowerCategory, String> categoryMap = {
-  EisenhowerCategory.urgentImportant: "Urgent & Important",
-  EisenhowerCategory.notUrgentImportant: "NOT Urget & Important",
-  EisenhowerCategory.urgentNotImportant: "Urgent & NOT Important",
-  EisenhowerCategory.notUrgentNotImportant: "NOT Urget & NOT Important",
+  EisenhowerCategory.notUrgentImportant: "NOT urget important",
+  EisenhowerCategory.notUrgentNotImportant: "NOT urget NOT important",
+  EisenhowerCategory.urgentImportant: "Urget important",
+  EisenhowerCategory.urgentNotImportant: "Urget NOT important",
 };
 final Map<EisenhowerCategory, Color> categoryColors = {
   EisenhowerCategory.notUrgentImportant: const Color(0xFFFFD070),
@@ -98,14 +100,34 @@ enum TaskStatus {
 @HiveType(typeId: 2)
 enum EisenhowerCategory {
   @HiveField(0)
-  urgentImportant,
+  urgentImportant(
+    title: 'URGENT & IMPORTANT',
+    color: AppColors.urgentImportantTaskColor,
+  ),
 
   @HiveField(1)
-  notUrgentImportant,
+  notUrgentImportant(
+    title: 'NOT URGENT & IMPORTANT',
+    color: AppColors.notUrgentImportantTaskColor,
+  ),
 
   @HiveField(2)
-  urgentNotImportant,
+  urgentNotImportant(
+    title: 'URGENT & NOT IMPORTANT',
+    color: AppColors.urgentNotImportantTaskColor,
+  ),
 
   @HiveField(3)
-  notUrgentNotImportant,
+  notUrgentNotImportant(
+    title: 'NOT URGENT & NOT IMPORTANT',
+    color: AppColors.notUrgentNotImportantTaskColor,
+  );
+
+  final String title;
+  final Color color;
+
+  const EisenhowerCategory({
+    required this.title,
+    required this.color,
+  });
 }
