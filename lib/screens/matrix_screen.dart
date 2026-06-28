@@ -61,23 +61,18 @@ class MatrixScreen extends StatelessWidget {
         mainAxisSpacing: 12,
         childAspectRatio: exactAspectRatio,
         physics: const BouncingScrollPhysics(),
-        children: [
+        children:  const [
           MatrixQuadrant(
-            quadrantTitle: categoryMap[EisenhowerCategory.urgentImportant]!,
-            color: categoryColors[EisenhowerCategory.urgentImportant]!,
+            taskCategory: EisenhowerCategory.urgentImportant,
           ),
           MatrixQuadrant(
-            quadrantTitle: categoryMap[EisenhowerCategory.notUrgentImportant]!,
-            color: categoryColors[EisenhowerCategory.notUrgentImportant]!,
+            taskCategory: EisenhowerCategory.notUrgentImportant,
           ),
           MatrixQuadrant(
-            quadrantTitle: categoryMap[EisenhowerCategory.urgentNotImportant]!,
-            color: categoryColors[EisenhowerCategory.urgentNotImportant]!,
+            taskCategory: EisenhowerCategory.urgentNotImportant,
           ),
           MatrixQuadrant(
-            quadrantTitle:
-                categoryMap[EisenhowerCategory.notUrgentNotImportant]!,
-            color: categoryColors[EisenhowerCategory.notUrgentNotImportant]!,
+            taskCategory: EisenhowerCategory.notUrgentNotImportant,
           ),
         ],
       ),
