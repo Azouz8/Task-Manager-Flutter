@@ -12,26 +12,23 @@ class LayoutScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = LayoutCubit.get(context);
         return Scaffold(
-          body: cubit.screens[cubit.currentIndex],
-
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: cubit.currentIndex,
-            items: cubit.bottomItems,
-            onTap: (value) {
-              cubit.changeBottomNav(value);
-            },
-            backgroundColor: const Color(0xff5b9ee1),
-            showUnselectedLabels: false,
-            showSelectedLabels: false,
-            enableFeedback: false,
-            selectedItemColor: Colors.white,
-            selectedIconTheme: const IconThemeData(
-              color: Colors.white,
-              size: 32,
+          body: cubit.screens[state.currentIndex],
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Color(0xFF444444),
+                  width: 1,
+                ),
+              ),
             ),
-            elevation: 0,
-            unselectedItemColor: Colors.white54,
-            type: BottomNavigationBarType.fixed,
+            child: BottomNavigationBar(
+              currentIndex: state.currentIndex,
+              items: cubit.bottomItems,
+              onTap: (value) {
+                cubit.changeBottomNavIndex(value);
+              },
+            ),
           ),
         );
       },
