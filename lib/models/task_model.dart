@@ -8,10 +8,10 @@ part 'task_model.g.dart';
 
 final formatter = DateFormat.yMd();
 final Map<EisenhowerCategory, String> categoryMap = {
-  EisenhowerCategory.notUrgentImportant: "NOT urget important",
-  EisenhowerCategory.notUrgentNotImportant: "NOT urget NOT important",
-  EisenhowerCategory.urgentImportant: "Urget important",
-  EisenhowerCategory.urgentNotImportant: "Urget NOT important",
+  EisenhowerCategory.notUrgentImportant: "NOT Urget & Important",
+  EisenhowerCategory.notUrgentNotImportant: "NOT Urget & NOT Important",
+  EisenhowerCategory.urgentImportant: "Urget & Important",
+  EisenhowerCategory.urgentNotImportant: "Urget & NOT Important",
 };
 final Map<EisenhowerCategory, Color> categoryColors = {
   EisenhowerCategory.notUrgentImportant: const Color(0xFFFFD070),

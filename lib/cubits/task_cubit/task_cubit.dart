@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_manager/cubits/task_cubit/tast_states.dart';
+import 'package:task_manager/cubits/task_cubit/task_states.dart';
 import 'package:task_manager/models/task_model.dart';
 import 'package:task_manager/repos/task_repo.dart';
 
