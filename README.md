@@ -2,6 +2,15 @@
 
 A modern Flutter task management application that uses local Hive storage and Flutter BLoC for state management. The app provides task organization, Eisenhower matrix support, profile tracking, and category management through an intuitive mobile UI.
 
+## Screens
+<img width="250" alt="Screenshot 2026-06-29 200151" src="https://github.com/user-attachments/assets/c76b1132-d462-40be-b520-06fec75e96e9" />
+<img width="250" alt="Screenshot 2026-06-29 200058" src="https://github.com/user-attachments/assets/608fe942-7a3b-40c9-a52c-f2194481ce29" />
+<img width="250" alt="Screenshot 2026-06-29 200159" src="https://github.com/user-attachments/assets/dd0313f1-959c-4437-bc1a-913cf71badb1" />
+<img width="250" alt="Screenshot 2026-06-29 200207" src="https://github.com/user-attachments/assets/fd4419e7-939f-45f3-a734-c25dce2520ee" />
+<img width="250" alt="Screenshot 2026-06-29 200219" src="https://github.com/user-attachments/assets/9695d49f-ba1b-43da-af8a-52d6772ee12e" />
+<img width="250" alt="Screenshot 2026-06-29 200237" src="https://github.com/user-attachments/assets/8b6f438a-7993-4f0c-a8c8-beab475bc51f" />
+
+
 ## Key Features
 
 - Task creation, editing, and deletion
